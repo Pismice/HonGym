@@ -1,0 +1,32 @@
+{{ define "base" }}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+	<header>
+		<h1>My First Web Page</h1>
+	</header>
+
+	<nav>
+		<ul>
+			<li><a href="/protected">Home</a></li>
+			<li><a href="/protected/workouts">Manage your workouts</a></li>
+			<li><a href="/protected/sessions">Manage your sessions</a></li>
+			<li><a href="/protected/exercises">Manage your exercises</a></li>
+			<li><a href="/protected/stats">Check your stats</a></li>
+		</ul>
+	</nav>
+
+	<main>
+		{{ template "content" . }}
+	</main>
+</body>
+
+</html>
+{{ end }}

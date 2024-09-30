@@ -8,7 +8,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"html/template"
 	"io"
 	"net/http"
 )
@@ -23,6 +22,13 @@ type User struct {
 	Username   string
 	Password   string
 	Session_id string
+}
+
+type Exercise struct {
+	gorm.Model
+	Name    string `gorm:"uniqueIndex"`
+	OwnerID int
+	Owner   User
 }
 
 func AuthMiddleware(db *gorm.DB) gin.HandlerFunc {
@@ -62,30 +68,68 @@ func main() {
 
 	db.AutoMigrate(&Workout{})
 	db.AutoMigrate(&User{})
+	db.AutoMigrate(&Exercise{})
 	db.Create(&Workout{Name: "Squatos"})
 
 	protected := r.Group("/protected")
 	protected.Use(AuthMiddleware(db))
 
 	protected.GET("/", func(c *gin.Context) {
-		tmpl, _ := template.New("").ParseFiles("templates/base.html", "templates/home.html")
-		_ = tmpl.ExecuteTemplate(c.Writer, "base", nil)
+		c.HTML(http.StatusOK, "base.html", gin.H{})
+	})
 
+	protected.GET("/home", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "home.html", gin.H{})
 	})
 
 	protected.GET("/workouts", func(c *gin.Context) {
-		tmpl, _ := template.New("").ParseFiles("templates/base.html", "templates/manage_workouts.html")
-		_ = tmpl.ExecuteTemplate(c.Writer, "base", nil)
+		c.HTML(http.StatusOK, "manage_workouts.html", gin.H{})
 	})
 
 	protected.GET("/sessions", func(c *gin.Context) {
-		tmpl, _ := template.New("").ParseFiles("templates/base.html", "templates/manage_sessions.html")
-		_ = tmpl.ExecuteTemplate(c.Writer, "base", nil)
+		c.HTML(http.StatusOK, "manage_sessions.html", gin.H{})
+	})
+
+	protected.GET("/exercises", func(c *gin.Context) {
+		var exercises []Exercise
+		db.Find(&exercises)
+		c.HTML(http.StatusOK, "manage_exercises.html", gin.H{"exercises": exercises})
+	})
+
+	protected.GET("/creation_exercise", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "creation_exercise.html", gin.H{})
+	})
+
+	protected.POST("/exercises", func(c *gin.Context) {
+		var request struct {
+			Name string `form:"name" json:"name" binding:"required"`
+		}
+
+		// Bind the request to the struct
+		if err := c.Bind(&request); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Missing name"})
+			return
+		}
+
+		// Get the session id of the connected user
+		sessionID, _ := c.Cookie("session_id")
+
+		// Get the corresponding user
+		var user User
+		db.Where("session_id = ?", sessionID).First(&user)
+
+		// Create the exercise for the user
+		var idk = db.Create(&Exercise{Name: request.Name, Owner: user})
+		if idk.Error != nil {
+
+			c.HTML(http.StatusOK, "result.html", gin.H{"success": false, "message": idk.Error})
+		} else {
+			c.HTML(http.StatusOK, "result.html", gin.H{"success": true, "message": "Exercise created"})
+		}
 	})
 
 	protected.GET("/stats", func(c *gin.Context) {
-		tmpl, _ := template.New("").ParseFiles("templates/base.html", "templates/stats.html")
-		_ = tmpl.ExecuteTemplate(c.Writer, "base", nil)
+		c.HTML(http.StatusOK, "stats.html", gin.H{})
 	})
 
 	r.GET("/", func(c *gin.Context) {
@@ -137,8 +181,7 @@ func main() {
 		// Create a new user
 		db.Create(&user)
 
-		tmpl, _ := template.New("").ParseFiles("templates/base.html", "templates/home.html")
-		_ = tmpl.ExecuteTemplate(c.Writer, "base", nil)
+		c.HTML(http.StatusOK, "base.html", gin.H{})
 	})
 
 	// POST request for Login
@@ -177,9 +220,7 @@ func main() {
 		db.Save(&user)
 		c.SetCookie("session_id", sessionID, 3600, "/", "localhost", false, true)
 
-		tmpl, _ := template.New("").ParseFiles("templates/base.html", "templates/home.html")
-		_ = tmpl.ExecuteTemplate(c.Writer, "base", nil)
-
+		c.HTML(http.StatusOK, "base.html", gin.H{})
 	})
 
 	r.Run(":8080")

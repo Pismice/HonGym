@@ -1,10 +1,10 @@
-{{ define "base" }}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://unpkg.com/htmx.org@1.9.2"></script>
 </head>
 
 <body>
@@ -15,18 +15,24 @@
 
 	<nav>
 		<ul>
-			<li><a href="/protected">Home</a></li>
-			<li><a href="/protected/workouts">Manage your workouts</a></li>
-			<li><a href="/protected/sessions">Manage your sessions</a></li>
-			<li><a href="/protected/exercises">Manage your exercises</a></li>
-			<li><a href="/protected/stats">Check your stats</a></li>
+			<li><a href="/protected/home" hx-get="/protected/home" hx-target="#content">Home</a></li>
+			<li><a href="/protected/workouts " hx-get="/protected/workouts" hx-target="#content">Manage your
+					workouts</a>
+			</li>
+			<li><a href="/protected/sessions" hx-get="/protected/sessions" hx-target="#content">Manage your sessions</a>
+			</li>
+			<li><a href="/protected/exercises" hx-get="/protected/exercises" hx-target="#content">Manage your
+					exercises</a></li>
+			<li><a href="/protected/stats" hx-get="/protected/stats" hx-target="#content">Check your stats</a></li>
 		</ul>
 	</nav>
 
 	<main>
-		{{ template "content" . }}
+		<div id="content" hx-get="/protected/home" hx-trigger="load">
+			HERE IS DISPLAYED THE APP
+			Right now its HOME (default)
+		</div>
 	</main>
 </body>
 
 </html>
-{{ end }}

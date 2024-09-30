@@ -1,0 +1,11 @@
+<h2>Exercises</h2>
+<p>Welcome to the exercises page!</p>
+
+<div id="exercises">
+	{{ range .exercises }}
+	<div> - {{ .Name }}</div>
+	{{ end }}
+</div>
+
+<div id="result">NO RES</div>
+<a href="/protected/creation_exercise" hx-get="/protected/creation_exercise" hx-target="#content">Create exercise</a>

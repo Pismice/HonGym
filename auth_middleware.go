@@ -4,6 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
+
+	"gin-app/misc"
 )
 
 func AuthMiddleware(db *gorm.DB) gin.HandlerFunc {
@@ -15,7 +17,7 @@ func AuthMiddleware(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		var user User
+		var user misc.User
 		if err := db.Where("session_id = ?", sessionID).First(&user).Error; err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized because no corresponding for the session_id = " + sessionID})
 			c.Abort()

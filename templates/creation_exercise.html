@@ -5,6 +5,6 @@
 	<input type="text" id="exercise-name" name="name" required>
 	<button type="submit">Add Exercise</button>
 </form>
-<form hx-get="/protected/exercises" hx-target="#content" hx-swap="outerHTML">
+<form hx-get="/protected/exercises" hx-target="#content" hx-swap="innerHTML">
 	<button type="submit">Go back</button>
 </form>

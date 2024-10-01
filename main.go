@@ -1,65 +1,22 @@
 package main
 
 import (
-	//"fmt"
-	"crypto/rand"
-	"encoding/hex"
+	"fmt"
+	"net/http"
+	"strconv"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"io"
-	"net/http"
 )
-
-type Workout struct {
-	gorm.Model
-	Name string
-}
-
-type User struct {
-	gorm.Model
-	Username   string
-	Password   string
-	Session_id string
-}
-
-type Exercise struct {
-	gorm.Model
-	Name    string `gorm:"uniqueIndex"`
-	OwnerID int
-	Owner   User
-}
-
-func AuthMiddleware(db *gorm.DB) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		sessionID, err := c.Cookie("session_id")
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-			c.Abort()
-			return
-		}
-
-		var user User
-		if err := db.Where("session_id = ?", sessionID).First(&user).Error; err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-			c.Abort()
-			return
-		}
-
-		if sessionID == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-			c.Abort()
-			return
-		}
-
-		c.Next()
-	}
-}
 
 func main() {
 	r := gin.Default()
 	r.LoadHTMLGlob("templates/*")
+
+	r.Static("/assets", "./assets")
 
 	db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
 	if err != nil {
@@ -69,6 +26,7 @@ func main() {
 	db.AutoMigrate(&Workout{})
 	db.AutoMigrate(&User{})
 	db.AutoMigrate(&Exercise{})
+	db.AutoMigrate(&Seance{})
 	db.Create(&Workout{Name: "Squatos"})
 
 	protected := r.Group("/protected")
@@ -87,12 +45,75 @@ func main() {
 	})
 
 	protected.GET("/sessions", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "manage_sessions.html", gin.H{})
+		sessionID, _ := c.Cookie("session_id")
+		var user User
+		db.Where("session_id = ?", sessionID).First(&user)
+		var sessions []Seance
+		db.Model(&Seance{}).Preload("Exercises").Where("owner_id = ?", user.ID).Find(&sessions)
+		c.HTML(http.StatusOK, "manage_sessions.html", gin.H{"sessions": sessions})
+	})
+
+	protected.GET("/creation_session", func(c *gin.Context) {
+		sessionID, _ := c.Cookie("session_id")
+		var user User
+		db.Where("session_id = ?", sessionID).First(&user)
+		var exercises []Exercise
+		db.Where("owner_id = ?", user.ID).Find(&exercises)
+		c.HTML(http.StatusOK, "creation_session.html", gin.H{"exercises": exercises})
+	})
+
+	protected.POST("/sessions", func(c *gin.Context) {
+		var request struct {
+			Name               string `form:"name" json:"name" binding:"required"`
+			Selected_exercises string `form:"selected_exercises" json:"selected_exercises" binding:"required"`
+		}
+
+		// Bind the request to the struct
+		if err := c.Bind(&request); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Missing name"})
+			return
+		}
+
+		strArr := strings.Split(request.Selected_exercises, ",")
+		var exercisesId []int
+		for _, str := range strArr {
+			num, err := strconv.Atoi(str) // Convert string to int
+			if err != nil {
+				fmt.Println("Error converting:", str, err)
+				continue
+			}
+			exercisesId = append(exercisesId, num) // Add the integer to the slice
+		}
+
+		sessionID, _ := c.Cookie("session_id")
+		var user User
+		db.Where("session_id = ?", sessionID).First(&user)
+
+		var exercises []Exercise
+		for _, id := range exercisesId {
+			var exercise Exercise
+			db.First(&exercise, id)
+			exercises = append(exercises, exercise)
+		}
+
+		// Create the exercise for the user
+		var idk = db.Create(&Seance{Name: request.Name, Owner: user, Exercises: exercises})
+		if idk.Error != nil {
+			c.HTML(http.StatusOK, "result.html", gin.H{"success": false, "message": idk.Error})
+		} else {
+			c.HTML(http.StatusOK, "result.html", gin.H{"success": true, "message": "Session created"})
+		}
 	})
 
 	protected.GET("/exercises", func(c *gin.Context) {
+		// Get the connected user
+		sessionID, _ := c.Cookie("session_id")
+		var user User
+		db.Where("session_id = ?", sessionID).First(&user)
+
+		// Get the sessions of the user
 		var exercises []Exercise
-		db.Find(&exercises)
+		db.Where("owner_id = ?", user.ID).Find(&exercises)
 		c.HTML(http.StatusOK, "manage_exercises.html", gin.H{"exercises": exercises})
 	})
 
@@ -121,7 +142,6 @@ func main() {
 		// Create the exercise for the user
 		var idk = db.Create(&Exercise{Name: request.Name, Owner: user})
 		if idk.Error != nil {
-
 			c.HTML(http.StatusOK, "result.html", gin.H{"success": false, "message": idk.Error})
 		} else {
 			c.HTML(http.StatusOK, "result.html", gin.H{"success": true, "message": "Exercise created"})
@@ -224,17 +244,4 @@ func main() {
 	})
 
 	r.Run(":8080")
-}
-
-func GenerateSessionID(length int) (string, error) {
-	// Create a byte slice with the given length
-	bytes := make([]byte, length)
-
-	// Fill the slice with random bytes
-	if _, err := io.ReadFull(rand.Reader, bytes); err != nil {
-		return "", err
-	}
-
-	// Convert the byte slice to a hexadecimal string
-	return hex.EncodeToString(bytes), nil
 }

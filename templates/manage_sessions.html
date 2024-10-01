@@ -1,2 +1,18 @@
 <h2>Sessions</h2>
+
 <p>Welcome to the sessions page!</p>
+
+<div id="exercises">
+	{{ range .sessions }}
+	<div>
+		- {{ .Name }}
+		{{ range .Exercises }}
+		<div>
+			-> - {{ .Name }}
+		</div>
+		{{ end }}
+	</div>
+	{{ end }}
+</div>
+
+<a href="" hx-get="/protected/creation_session" hx-target="#content">Create a new session</a>

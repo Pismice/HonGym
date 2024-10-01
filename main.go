@@ -77,12 +77,12 @@ func main() {
 		strArr := strings.Split(request.Selected_exercises, ",")
 		var exercisesId []int
 		for _, str := range strArr {
-			num, err := strconv.Atoi(str) // Convert string to int
+			num, err := strconv.Atoi(str)
 			if err != nil {
 				fmt.Println("Error converting:", str, err)
 				continue
 			}
-			exercisesId = append(exercisesId, num) // Add the integer to the slice
+			exercisesId = append(exercisesId, num)
 		}
 
 		sessionID, _ := c.Cookie("session_id")

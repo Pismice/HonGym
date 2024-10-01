@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 
 	"gin-app/handlers"
+	"gin-app/middlewares"
 	"gin-app/misc"
 )
 
@@ -29,7 +30,7 @@ func main() {
 	db.Create(&misc.Workout{Name: "Squatos"})
 
 	protected := r.Group("/protected")
-	protected.Use(AuthMiddleware(db))
+	protected.Use(middlewares.AuthMiddleware(db))
 
 	protected.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "base.html", gin.H{})
@@ -44,6 +45,8 @@ func main() {
 	})
 
 	handlers.Sessions(protected, db)
+	handlers.Exercises(protected, db)
+	handlers.Auth(&r.RouterGroup, db)
 
 	protected.GET("/stats", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "stats.html", gin.H{})

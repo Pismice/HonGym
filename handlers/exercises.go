@@ -21,6 +21,13 @@ func Exercises(r *gin.RouterGroup, db *gorm.DB) {
 		c.HTML(http.StatusOK, "manage_exercises.html", gin.H{"exercises": exercises})
 	})
 
+	r.GET("/exercises/:id", func(c *gin.Context) {
+		id := c.Param("id")
+		var exercise misc.Exercise
+		db.First(&exercise, id)
+		c.HTML(http.StatusOK, "modify_exercise.html", gin.H{"exercise": exercise})
+	})
+
 	r.GET("/creation_exercise", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "creation_exercise.html", gin.H{})
 	})
@@ -50,5 +57,26 @@ func Exercises(r *gin.RouterGroup, db *gorm.DB) {
 		} else {
 			c.HTML(http.StatusOK, "result.html", gin.H{"success": true, "message": "Exercise created"})
 		}
+	})
+
+	r.PATCH("/exercises/:id", func(c *gin.Context) {
+		id := c.Param("id")
+		var exercise misc.Exercise
+		db.First(&exercise, id)
+
+		var request struct {
+			Name string `form:"name" json:"name" binding:"required"`
+		}
+
+		// Bind the request to the struct
+		if err := c.Bind(&request); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Missing name"})
+			return
+		}
+
+		// Update the exercise
+		exercise.Name = request.Name
+		db.Save(&exercise)
+		c.HTML(http.StatusOK, "result.html", gin.H{"success": true, "message": "Exercise updated"})
 	})
 }

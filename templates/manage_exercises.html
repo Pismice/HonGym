@@ -3,7 +3,9 @@
 
 <div id="exercises">
 	{{ range .exercises }}
-	<div> - {{ .Name }}</div>
+	<div>
+		- {{ .Name }} <button hx-get="/protected/exercises/{{ .ID }}" hx-target="#content">Modify</button>
+	</div>
 	{{ end }}
 </div>
 

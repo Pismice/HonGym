@@ -1,0 +1,10 @@
+<h2>Modify Exercise: {{ .exercise.Name }}</h2>
+<div id="result"></div>
+<form hx-patch="/protected/exercises/{{ .exercise.ID }}" hx-target="#result" hx-swap="innerHTML">
+	<label for="exercise-name">Exercise Name:</label>
+	<input type="text" id="exercise-name" name="name" value="{{ .exercise.Name }}" required>
+	<button type=" submit">Apply modifications</button>
+</form>
+<form hx-get="/protected/exercises" hx-target="#content" hx-swap="innerHTML">
+	<button type="submit">Go back</button>
+</form>

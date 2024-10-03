@@ -19,7 +19,7 @@
 		</form>
 
 		<h1>Register</h1>
-		<form method="POST" action="/register">
+		<form hx-post="/register" hx-target="#app" hx-swap="outerHTML">
 			<label for="username">Username:</label>
 			<input type="text" id="username" name="username" required><br><br>
 

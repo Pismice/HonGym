@@ -1,0 +1,108 @@
+<h2>Modify Session: {{ .session.Name }}</h2>
+<div id="result"></div>
+
+<h3>Add exercises to your session:</h3>
+<div id="available_exercises">
+	{{ range .exercises_not_selected }}
+	<div>
+		<span class="exo_id" style="display: none;">{{ .ID }}</span>
+		<span class="exo_name">- {{ .Name }}</span>
+		<button class="add-btn"> Add </button>
+	</div>
+	{{ end }}
+</div>
+
+<h3>Selected exercises:</h3>
+<div id="selected_exercises">
+	{{ range .exercises_selected }}
+	<div>
+		<span class="exo_id" style="display: none;">{{ .ID }}</span>
+		<span class="exo_name">- {{ .Name }}</span>
+		<button class="remove-btn"> Add </button>
+	</div>
+	{{ end }}
+</div>
+
+<form hx-post="/protected/sessions" hx-target="#result" hx-swap="innerHTML">
+	<label for="exercise-name">Session Name:</label>
+	<input type="text" id="exercise-name" name="name" required>
+	<input type="hidden" id="selected-exercises-input" name="selected_exercises" value="">
+	<button type="submit">Apply modifications</button>
+</form>
+
+<button hx-get="/protected/sessions" hx-target="#content" hx-swap="innerHTML">Go back</button>
+
+<script>
+	// Select the parent containers
+	const availableExercises = document.getElementById('available_exercises');
+	const selectedExercises = document.getElementById('selected_exercises');
+	const selectedExercisesInput = document.getElementById('selected-exercises-input'); // hidden input to store selected exercises
+
+	// Function to update the hidden input value based on the selected exercises
+	function updateSelectedExercisesInput() {
+		const selectedExerciseNames = Array.from(selectedExercises.querySelectorAll('.exo_id')).map(el => el.textContent.trim());
+		selectedExercisesInput.value = selectedExerciseNames.join(','); // Store as comma-separated values
+	}
+
+	// Add an event listener for "Add" buttons
+	availableExercises.addEventListener('click', function (event) {
+		if (event.target.classList.contains('add-btn')) {
+			// Get the parent div of the clicked button
+			const exerciseDiv = event.target.parentElement;
+
+			// Clone the exerciseDiv to avoid moving the original one
+			const clonedExercise = exerciseDiv.cloneNode(true);
+
+			// Remove the "Add" button from the cloned div
+			clonedExercise.querySelector('button').remove();
+
+			// Create a new "Remove" button
+			const removeButton = document.createElement('button');
+			removeButton.textContent = 'Remove';
+			removeButton.classList.add('remove-btn');
+
+			// Append the "Remove" button to the cloned exercise
+			clonedExercise.appendChild(removeButton);
+
+			// Append the cloned exercise (with "Remove" button) to the selected exercises container
+			selectedExercises.appendChild(clonedExercise);
+
+			// Remove the original exercise from available exercises
+			exerciseDiv.remove();
+
+			// Update the hidden input value with the new selected exercises
+			updateSelectedExercisesInput();
+		}
+	});
+
+	// Add an event listener for "Remove" buttons
+	selectedExercises.addEventListener('click', function (event) {
+		if (event.target.classList.contains('remove-btn')) {
+			// Get the parent div of the clicked "Remove" button
+			const exerciseDiv = event.target.parentElement;
+
+			// Clone the exerciseDiv to move it back to available exercises
+			const clonedExercise = exerciseDiv.cloneNode(true);
+
+			// Remove the "Remove" button from the cloned div
+			clonedExercise.querySelector('button').remove();
+
+			// Create a new "Add" button to add back to available exercises
+			const addButton = document.createElement('button');
+			addButton.textContent = 'Add';
+			addButton.classList.add('add-btn');
+
+			// Append the "Add" button to the cloned exercise
+			clonedExercise.appendChild(addButton);
+
+			// Append the cloned exercise back to the available exercises container
+			availableExercises.appendChild(clonedExercise);
+
+			// Remove the original exercise from selected exercises
+			exerciseDiv.remove();
+
+			// Update the hidden input value with the new selected exercises
+			updateSelectedExercisesInput();
+		}
+	});
+</script>

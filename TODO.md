@@ -5,3 +5,5 @@
 - [ ] Creation et affichages exercices, seances puis workouts
 - [ ] Page accueil ou on voit notre worktout actuel ou choisir un nouveau
 - [ ] Seance en cours, exercices en cours
+
+- changer pour que quand pas connecte retourner html de login plutot que json

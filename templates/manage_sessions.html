@@ -6,6 +6,7 @@
 	{{ range .sessions }}
 	<div>
 		- {{ .Name }}
+		<button hx-get="/protected/sessions/{{ .ID }}" hx-target="#content">Modify</button>
 		{{ range .Exercises }}
 		<div>
 			-> - {{ .Name }}

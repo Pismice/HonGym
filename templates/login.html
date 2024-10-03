@@ -6,27 +6,29 @@
 </head>
 
 <body>
-	<h1>Login</h1>
-	<form method="POST" action="/login">
-		<label for="username">Username:</label>
-		<input type="text" id="username" name="username" required><br><br>
+	<div id="app">
+		<h1>Login</h1>
+		<form hx-post="/login" hx-target="#app" hx-swap="outerHTML">
+			<label for="username">Username:</label>
+			<input type="text" id="username" name="username" required><br><br>
 
-		<label for="password">Password:</label>
-		<input type="password" id="password" name="password" required><br><br>
+			<label for="password">Password:</label>
+			<input type="password" id="password" name="password" required><br><br>
 
-		<button type="submit">Login</button>
-	</form>
+			<button type="submit">Login</button>
+		</form>
 
-	<h1>Register</h1>
-	<form method="POST" action="/register">
-		<label for="username">Username:</label>
-		<input type="text" id="username" name="username" required><br><br>
+		<h1>Register</h1>
+		<form method="POST" action="/register">
+			<label for="username">Username:</label>
+			<input type="text" id="username" name="username" required><br><br>
 
-		<label for="password">Password:</label>
-		<input type="password" id="password" name="password" required><br><br>
+			<label for="password">Password:</label>
+			<input type="password" id="password" name="password" required><br><br>
 
-		<button type="submit">Login</button>
-	</form>
+			<button type="submit">Login</button>
+		</form>
+	</div>
 </body>
 
 </html>

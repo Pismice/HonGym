@@ -27,6 +27,7 @@ func main() {
 	db.AutoMigrate(&misc.User{})
 	db.AutoMigrate(&misc.Exercise{})
 	db.AutoMigrate(&misc.Seance{})
+	db.AutoMigrate(&misc.RealWorkout{}, &misc.RealSeance{}, &misc.RealExercise{}, &misc.RealSet{})
 	db.Create(&misc.Workout{Name: "Squatos"})
 
 	protected := r.Group("/protected")

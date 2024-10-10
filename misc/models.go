@@ -39,7 +39,32 @@ type Exercise struct {
 
 type RealWorkout struct {
 	gorm.Model
+	TemplateID int
 	Template   Workout
 	Time_start time.Time
 	Time_end   time.Time
+}
+
+type RealSeance struct {
+	gorm.Model
+	TemplateID             int
+	Template               Seance
+	CorrespondingWorkoutID int
+	CorrespondingWorkout   RealWorkout
+}
+
+type RealExercise struct {
+	gorm.Model
+	TemplateID            int
+	Template              Exercise
+	CorrespondingSeanceID int
+	CorrespondingSeance   RealSeance
+}
+
+type RealSet struct {
+	gorm.Model
+	CorrespondingExerciseID int
+	CorrespondingExercise   RealExercise
+	Reps                    int
+	Weight                  int
 }

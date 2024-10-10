@@ -1,0 +1,103 @@
+<h2>Create Workout</h2>
+<div id="result"></div>
+
+<h3>Add sessions to your workout:</h3>
+<div id="available_sessions">
+	{{ range .sessions }}
+	<div>
+		<span class="sess_id" style="display: none;">{{ .ID }}</span>
+		<span class="sess_name">- {{ .Name }}</span>
+		<button class="add-btn"> Add </button>
+	</div>
+	{{ end }}
+</div>
+
+<h3>Selected sessions:</h3>
+<div id="selected_sessions">
+</div>
+
+<form hx-post="/protected/workouts" hx-target="#result" hx-swap="innerHTML">
+	<label for="workout-name">Workout Name:</label>
+	<input type="text" id="workout-name" name="name" required>
+	<input type="hidden" id="selected-sessions-input" name="selected_sessions" value="">
+	<button type="submit">Add Workout</button>
+</form>
+
+<form hx-get="/protected/workouts" hx-target="#content" hx-swap="innerHTML">
+	<button type="submit">Go back</button>
+</form>
+
+<script>
+	// Select the parent containers
+	const availableSessions = document.getElementById('available_sessions');
+	const selectedSessions = document.getElementById('selected_sessions');
+	const selectedSessionsInput = document.getElementById('selected-sessions-input'); // hidden input to store selected exercises
+
+	// Function to update the hidden input value based on the selected exercises
+	function updateSelectedSessionsInput() {
+		const selectedExerciseNames = Array.from(selectedSessions.querySelectorAll('.sess_id')).map(el => el.textContent.trim());
+		selectedSessionsInput.value = selectedExerciseNames.join(','); // Store as comma-separated values
+	}
+
+	// Add an event listener for "Add" buttons
+	availableSessions.addEventListener('click', function (event) {
+		if (event.target.classList.contains('add-btn')) {
+			// Get the parent div of the clicked button
+			const exerciseDiv = event.target.parentElement;
+
+			// Clone the exerciseDiv to avoid moving the original one
+			const clonedExercise = exerciseDiv.cloneNode(true);
+
+			// Remove the "Add" button from the cloned div
+			clonedExercise.querySelector('button').remove();
+
+			// Create a new "Remove" button
+			const removeButton = document.createElement('button');
+			removeButton.textContent = 'Remove';
+			removeButton.classList.add('remove-btn');
+
+			// Append the "Remove" button to the cloned exercise
+			clonedExercise.appendChild(removeButton);
+
+			// Append the cloned exercise (with "Remove" button) to the selected exercises container
+			selectedSessions.appendChild(clonedExercise);
+
+			// Remove the original exercise from available exercises
+			exerciseDiv.remove();
+
+			// Update the hidden input value with the new selected exercises
+			updateSelectedSessionsInput();
+		}
+	});
+
+	// Add an event listener for "Remove" buttons
+	selectedSessions.addEventListener('click', function (event) {
+		if (event.target.classList.contains('remove-btn')) {
+			// Get the parent div of the clicked "Remove" button
+			const sessionDiv = event.target.parentElement;
+
+			// Clone the exerciseDiv to move it back to available exercises
+			const clonedExercise = sessionDiv.cloneNode(true);
+
+			// Remove the "Remove" button from the cloned div
+			clonedExercise.querySelector('button').remove();
+
+			// Create a new "Add" button to add back to available exercises
+			const addButton = document.createElement('button');
+			addButton.textContent = 'Add';
+			addButton.classList.add('add-btn');
+
+			// Append the "Add" button to the cloned exercise
+			clonedExercise.appendChild(addButton);
+
+			// Append the cloned exercise back to the available exercises container
+			availableSessions.appendChild(clonedExercise);
+
+			// Remove the original exercise from selected exercises
+			sessionDiv.remove();
+
+			// Update the hidden input value with the new selected exercises
+			updateSelectedSessionsInput();
+		}
+	});
+</script>

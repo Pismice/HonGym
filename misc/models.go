@@ -1,6 +1,8 @@
 package misc
 
 import (
+	"time"
+
 	"gorm.io/gorm"
 )
 
@@ -15,6 +17,8 @@ type Workout struct {
 	gorm.Model
 	Name    string
 	Seances []Seance `gorm:"many2many:workout_seances;"`
+	OwnerID int
+	Owner   User
 }
 
 type Seance struct {
@@ -31,4 +35,11 @@ type Exercise struct {
 	OwnerID int
 	Owner   User
 	Seances []Seance `gorm:"many2many:seance_exercises;"`
+}
+
+type RealWorkout struct {
+	gorm.Model
+	Template   Workout
+	Time_start time.Time
+	Time_end   time.Time
 }

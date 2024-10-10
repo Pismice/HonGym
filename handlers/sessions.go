@@ -66,17 +66,18 @@ func Sessions(r *gin.RouterGroup, db *gorm.DB) {
 	r.PATCH("/sessions/:id", func(c *gin.Context) {
 		var request struct {
 			Name               string `form:"name" json:"name" binding:"required"`
-			Selected_exercises string `form:"selected_exercises" json:"selected_exercises"`
+			Selected_exercises string `form:"selected-exercises-input" json:"selected-exercises-input"`
 		}
 
-		// Bind the request to the struct
 		if err := c.Bind(&request); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Missing name"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request parsing"})
 			return
 		}
 		sessionID, _ := c.Cookie("session_id")
 		var user misc.User
 		db.Where("session_id = ?", sessionID).First(&user)
+
+		println(request.Selected_exercises)
 
 		strArr := strings.Split(request.Selected_exercises, ",")
 		var exercisesId []int
@@ -94,6 +95,11 @@ func Sessions(r *gin.RouterGroup, db *gorm.DB) {
 			var exercise misc.Exercise
 			db.First(&exercise, id)
 			exercises = append(exercises, exercise)
+			println("Found exercise:", exercise.Name)
+		}
+
+		for _, exercise := range exercises {
+			println("Exercise:", exercise.Name)
 		}
 
 		id := c.Param("id")
@@ -102,6 +108,10 @@ func Sessions(r *gin.RouterGroup, db *gorm.DB) {
 		session.Name = request.Name
 		session.Exercises = exercises
 		db.Save(&session)
+		db.Model(&session).Association("Exercises").Replace(exercises)
+		for _, e := range session.Exercises {
+			println("Deleting exercise:", e.Name)
+		}
 		c.HTML(http.StatusOK, "result.html", gin.H{"success": true, "message": "Session modified"})
 	})
 

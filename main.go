@@ -40,12 +40,9 @@ func main() {
 		c.HTML(http.StatusOK, "home.html", gin.H{})
 	})
 
-	protected.GET("/workouts", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "manage_workouts.html", gin.H{})
-	})
-
 	handlers.Sessions(protected, db)
 	handlers.Exercises(protected, db)
+	handlers.Workouts(protected, db)
 	handlers.Auth(&r.RouterGroup, db)
 
 	protected.GET("/stats", func(c *gin.Context) {

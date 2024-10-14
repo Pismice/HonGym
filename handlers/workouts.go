@@ -144,5 +144,4 @@ func Workouts(r *gin.RouterGroup, db *gorm.DB) {
 			c.HTML(http.StatusOK, "result.html", gin.H{"success": true, "message": "Workout modified"})
 		}
 	})
-
 }

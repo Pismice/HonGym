@@ -115,6 +115,24 @@ func Sessions(r *gin.RouterGroup, db *gorm.DB) {
 		c.HTML(http.StatusOK, "result.html", gin.H{"success": true, "message": "Session modified"})
 	})
 
+	// TODO not used !!!!
+	r.PATCH("/sessions/:id/start", func(c *gin.Context) {
+		sessionID, _ := c.Cookie("session_id")
+		var user misc.User
+		db.Where("session_id = ?", sessionID).First(&user)
+
+		id := c.Param("id")
+		var template misc.Seance
+		db.First(&template, id)
+
+		var realSession misc.RealSeance
+		realSession.Owner = user
+		realSession.Template = template
+
+		db.Create(&realSession)
+		c.HTML(http.StatusOK, "result.html", gin.H{"success": true, "message": "New session started"})
+	})
+
 	r.POST("/sessions", func(c *gin.Context) {
 		var request struct {
 			Name               string `form:"name" json:"name" binding:"required"`

@@ -1,2 +1,13 @@
 <h2>Home</h2>
 <p>Welcome to the home page!</p>
+{{ .workout.Template.Name }}
+<h3>Sessions of the week:</h3>
+<div id="result"></div>
+<div id="selected_sessions">
+	{{ range .sessions }}
+	<div>
+		<span class="sess_name">- {{ .Template.Name }}</span>
+		<button hx-post="/protected/sessions/{{ .ID }}/start" hx-target="#result" hx-swap="innerHTML"> START </button>
+	</div>
+	{{ end }}
+</div>

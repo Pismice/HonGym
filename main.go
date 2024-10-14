@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -28,7 +29,6 @@ func main() {
 	db.AutoMigrate(&misc.Exercise{})
 	db.AutoMigrate(&misc.Seance{})
 	db.AutoMigrate(&misc.RealWorkout{}, &misc.RealSeance{}, &misc.RealExercise{}, &misc.RealSet{})
-	db.Create(&misc.Workout{Name: "Squatos"})
 
 	protected := r.Group("/protected")
 	protected.Use(middlewares.AuthMiddleware(db))
@@ -38,12 +38,37 @@ func main() {
 	})
 
 	protected.GET("/home", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "home.html", gin.H{})
+		// Iterate over all the Workouts and return the first one that is active for the connected user
+		var user misc.User
+		sessionID, _ := c.Cookie("session_id")
+		db.Where("session_id = ?", sessionID).First(&user)
+		var activeRealWorkout misc.RealWorkout
+		res := db.Preload("Template").Where("owner_id = ? AND active = ?", user.ID, true).First(&activeRealWorkout)
+		if res.Error != nil {
+			if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+				sessionID, _ := c.Cookie("session_id")
+				var user misc.User
+				db.Where("session_id = ?", sessionID).First(&user)
+				var workouts []misc.Workout
+				db.Model(&misc.Workout{}).Preload("Seances").Where("owner_id = ?", user.ID).Find(&workouts)
+				c.HTML(http.StatusOK, "choose_workout_to_activate.html", gin.H{"workouts": workouts})
+			} else {
+				c.JSON(200, gin.H{"message": "Unexpected error"})
+			}
+		} else {
+			// Get the real seances for the active real workout
+			var realSeances []misc.RealSeance
+			db.Preload("Template").Preload("Template.Exercises").Where("corresponding_workout_id = ?", activeRealWorkout.ID).Find(&realSeances)
+			println(len(realSeances))
+			c.HTML(http.StatusOK, "home.html", gin.H{"workout": activeRealWorkout, "sessions": realSeances})
+		}
 	})
 
 	handlers.Sessions(protected, db)
+	handlers.RealSessions(protected, db)
 	handlers.Exercises(protected, db)
 	handlers.Workouts(protected, db)
+	handlers.RealWorkouts(protected, db)
 	handlers.Auth(&r.RouterGroup, db)
 
 	protected.GET("/stats", func(c *gin.Context) {

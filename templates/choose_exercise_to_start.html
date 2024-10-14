@@ -1,0 +1,11 @@
+<h2>Exercises of the current session</h2>
+<p>Choose an exercise to start</p>
+
+<div id="exercises">
+	{{ range .exercises }}
+	<div>
+		- {{ .Template.Name }}
+		<button hx-post="/protected/workouts/{{ .ID }}/activate" hx-target="#content">Start exercise</button>
+	</div>
+	{{ end }}
+</div>

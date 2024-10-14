@@ -8,9 +8,10 @@ import (
 
 type User struct {
 	gorm.Model
-	Username   string
-	Password   string
-	Session_id string
+	Username            string
+	Password            string
+	Session_id          string
+	ActiveRealWorkoutID int
 }
 
 type Workout struct {
@@ -39,14 +40,22 @@ type Exercise struct {
 
 type RealWorkout struct {
 	gorm.Model
-	TemplateID int
-	Template   Workout
-	Time_start time.Time
-	Time_end   time.Time
+	OwnerID     int
+	Owner       User
+	Active      bool
+	CurrentWeek int
+	TemplateID  int
+	Template    Workout
+	Time_start  time.Time
+	Time_end    time.Time
 }
 
 type RealSeance struct {
 	gorm.Model
+	Week                   int
+	OwnerID                int
+	Owner                  User
+	Active                 bool
 	TemplateID             int
 	Template               Seance
 	CorrespondingWorkoutID int
@@ -55,6 +64,8 @@ type RealSeance struct {
 
 type RealExercise struct {
 	gorm.Model
+	OwnerID               int
+	Owner                 User
 	TemplateID            int
 	Template              Exercise
 	CorrespondingSeanceID int
@@ -63,6 +74,8 @@ type RealExercise struct {
 
 type RealSet struct {
 	gorm.Model
+	OwnerID                 int
+	Owner                   User
 	CorrespondingExerciseID int
 	CorrespondingExercise   RealExercise
 	Reps                    int

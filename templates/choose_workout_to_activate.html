@@ -5,7 +5,8 @@
 	{{ range .workouts }}
 	<div>
 		- {{ .Name }}
-		<button hx-post="/protected/workouts/{{ .ID }}/activate" hx-target="#content">Activate</button>
+		<button hx-post="/protected/workouts/{{ .ID }}/activate" hx-target="#content"
+			hx-swap="innerHTML">Activate</button>
 		{{ range .Seances }}
 		<div>
 			-> - {{ .Name }}

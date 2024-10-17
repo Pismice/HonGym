@@ -34,6 +34,6 @@ func RealSessions(r *gin.RouterGroup, db *gorm.DB) {
 
 		println(len(realExercises))
 
-		c.HTML(http.StatusOK, "choose_exercise_to_start.html", gin.H{"exercises": realExercises})
+		c.HTML(http.StatusOK, "choose_exercise_to_start.html", gin.H{"exercises": realExercises, "realSeance": realSeance})
 	})
 }

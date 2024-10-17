@@ -60,13 +60,14 @@ func main() {
 			var realSeances []misc.RealSeance
 			db.Preload("Template").Preload("Template.Exercises").Where("corresponding_workout_id = ?", activeRealWorkout.ID).Find(&realSeances)
 			println(len(realSeances))
-			c.HTML(http.StatusOK, "home.html", gin.H{"workout": activeRealWorkout, "sessions": realSeances})
+			c.HTML(http.StatusOK, "choose_session_to_start.html", gin.H{"workout": activeRealWorkout, "sessions": realSeances})
 		}
 	})
 
 	handlers.Sessions(protected, db)
 	handlers.RealSessions(protected, db)
 	handlers.Exercises(protected, db)
+	handlers.RealExercises(protected, db)
 	handlers.Workouts(protected, db)
 	handlers.RealWorkouts(protected, db)
 	handlers.Auth(&r.RouterGroup, db)

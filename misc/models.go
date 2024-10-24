@@ -43,6 +43,7 @@ type RealWorkout struct {
 	OwnerID     int
 	Owner       User
 	Active      bool
+	Finished    bool
 	CurrentWeek int
 	TemplateID  int
 	Template    Workout
@@ -56,6 +57,7 @@ type RealSeance struct {
 	OwnerID                int
 	Owner                  User
 	Active                 bool
+	Finished               bool
 	TemplateID             int
 	Template               Seance
 	CorrespondingWorkoutID int
@@ -68,6 +70,7 @@ type RealExercise struct {
 	Owner                 User
 	TemplateID            int
 	Template              Exercise
+	Finished              bool
 	CorrespondingSeanceID int
 	CorrespondingSeance   RealSeance
 }

@@ -9,6 +9,23 @@ import (
 )
 
 func RealWorkouts(r *gin.RouterGroup, db *gorm.DB) {
+	// J ai du mettre GET parce que sinon 404 sur "PATCH" /home :(
+	r.GET("/workouts/:id/finish", func(c *gin.Context) {
+		sessionID, _ := c.Cookie("session_id")
+		var user misc.User
+		db.Where("session_id = ?", sessionID).First(&user)
+
+		id := c.Param("id")
+		var realWorkout misc.RealWorkout
+		db.Preload("Template").First(&realWorkout, id)
+
+		realWorkout.Finished = true
+		realWorkout.Active = false
+		db.Save(&realWorkout)
+
+		c.Redirect(http.StatusFound, "/protected/home")
+	})
+
 	r.POST("/workouts/:id/activate", func(c *gin.Context) {
 		sessionID, _ := c.Cookie("session_id")
 		var user misc.User
@@ -37,6 +54,6 @@ func RealWorkouts(r *gin.RouterGroup, db *gorm.DB) {
 			db.Save(&realSeance)
 		}
 
-		c.HTML(http.StatusOK, "result.html", gin.H{"success": true, "message": "New active workout"})
+		c.Redirect(http.StatusFound, "/protected/home")
 	})
 }

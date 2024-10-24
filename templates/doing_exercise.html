@@ -1,6 +1,11 @@
 <h2>Exercise: {{ .realExercise.Template.Name }}</h2>
-<input type="number" id="reps" placeholder="Reps">
-<input type="number" id="weight" placeholder="Weight">
-<button>Set done</button>
-<button>Go to next exercise</button>
-doing this exo
+<h3>Count: {{ .count }}</h3>
+<form id="exercise-form">
+	<input type="number" id="reps" placeholder="Reps">
+	<input type="number" id="weight" placeholder="Weight">
+	<button hx-patch="/protected/exercises/{{ .realExercise.ID }}/done" hx-target="#content" hx-swap="innerHTML"
+		hx-include="#exercise-form">Done</button>
+</form>
+
+<button hx-post="/protected/exercises/{{ .realExercise.ID }}/finish" hx-target="#content" hx-swap="innerHTML">Go to next
+	exercise</button>

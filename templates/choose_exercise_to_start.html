@@ -5,7 +5,10 @@
 	{{ range .exercises }}
 	<div>
 		- {{ .Template.Name }}
-		<button hx-post="/protected/exercises/{{ .ID }}/start" hx-target="#content">Start exercise</button>
+		<button hx-post="/protected/exercises/{{ .ID }}/start" hx-target="#content" {{ if .Finished }}
+			class="btn btn-danger" {{ else }} class="btn btn-primary" {{ end }}>Start exercise</button>
 	</div>
 	{{ end }}
+	<button hx-get="protected/sessions/{{ .realSeance.ID }}/finish" hx-target="#content" hx-swap="innerHTML">Finish this
+		session</button>
 </div>

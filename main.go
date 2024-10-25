@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,7 @@ import (
 
 func main() {
 	r := gin.Default()
+
 	r.LoadHTMLGlob("templates/*")
 
 	r.Static("/assets", "./assets")
@@ -84,5 +86,9 @@ func main() {
 		c.HTML(http.StatusOK, "index.html", gin.H{"workouts": workouts, "users": users})
 	})
 
-	r.Run(":8080")
+	//r.Run(":8080")
+	err = r.RunTLS(":8443", "cert.pem", "key.pem")
+	if err != nil {
+		log.Fatalf("Failed to run server: %v", err)
+	}
 }

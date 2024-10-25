@@ -79,11 +79,7 @@ func main() {
 	})
 
 	r.GET("/", func(c *gin.Context) {
-		var workouts []misc.Workout
-		var users []misc.User
-		db.Find(&workouts)
-		db.Find(&users)
-		c.HTML(http.StatusOK, "index.html", gin.H{"workouts": workouts, "users": users})
+		c.HTML(http.StatusOK, "index.html", gin.H{})
 	})
 
 	//r.Run(":8080")

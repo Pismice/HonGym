@@ -15,7 +15,8 @@ func AuthMiddleware(db *gorm.DB) gin.HandlerFunc {
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized because no session_id cookie"})
 			fmt.Println("Unauthorized because no session_id cookie")
-			c.Abort()
+			//c.Abort()
+			c.HTML(http.StatusOK, "login.html", gin.H{})
 			return
 		}
 
@@ -23,7 +24,8 @@ func AuthMiddleware(db *gorm.DB) gin.HandlerFunc {
 		if err := db.Where("session_id = ?", sessionID).First(&user).Error; err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized because no corresponding for the session_id = " + sessionID})
 			fmt.Println("Unauthorized because no corresponding for the session_id = " + sessionID)
-			c.Abort()
+			//c.Abort()
+			c.HTML(http.StatusOK, "login.html", gin.H{})
 			return
 		}
 

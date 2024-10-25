@@ -34,17 +34,17 @@
 							hx-target="#content">Check
 							your stats</a>
 					</li>
+					<li class="nav-item"><a class="nav-link" href="" hx-get="/loginregister" hx-target="#appo"
+							hx-swap="innerHTML">Go to login
+							screen</a>
+					</li>
 				</ul>
-				<form class="d-flex" role="search">
-					<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-					<button class="btn btn-outline-success" type="submit">Search</button>
-				</form>
 			</div>
 		</div>
 	</nav>
 
 	<main>
-		<div id="content" hx-get="/protected/home" hx-trigger="load">
+		<div id="content" hx-get="/protected/home" hx-trigger="load" hx-target="#content" hx-swap="innerHTML">
 			HERE IS DISPLAYED THE APP
 			Right now its HOME (default)
 		</div>

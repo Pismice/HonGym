@@ -16,8 +16,10 @@ func Sessions(r *gin.RouterGroup, db *gorm.DB) {
 		sessionID, _ := c.Cookie("session_id")
 		var user misc.User
 		db.Where("session_id = ?", sessionID).First(&user)
+
 		var sessions []misc.Seance
 		db.Model(&misc.Seance{}).Preload("Exercises").Where("owner_id = ?", user.ID).Find(&sessions)
+
 		c.HTML(http.StatusOK, "manage_sessions.html", gin.H{"sessions": sessions})
 	})
 
@@ -29,6 +31,10 @@ func Sessions(r *gin.RouterGroup, db *gorm.DB) {
 		id := c.Param("id")
 		var session misc.Seance
 		db.Preload("Exercises").First(&session, id)
+
+		if session.OwnerID != int(user.ID) {
+			c.Abort()
+		}
 
 		var exercises []misc.Exercise
 		db.Where("owner_id = ?", user.ID).Find(&exercises)
@@ -77,8 +83,6 @@ func Sessions(r *gin.RouterGroup, db *gorm.DB) {
 		var user misc.User
 		db.Where("session_id = ?", sessionID).First(&user)
 
-		println(request.Selected_exercises)
-
 		strArr := strings.Split(request.Selected_exercises, ",")
 		var exercisesId []int
 		for _, str := range strArr {
@@ -105,6 +109,9 @@ func Sessions(r *gin.RouterGroup, db *gorm.DB) {
 		id := c.Param("id")
 		var session misc.Seance
 		db.First(&session, id)
+		if session.OwnerID != int(user.ID) {
+			c.Abort()
+		}
 		session.Name = request.Name
 		session.Exercises = exercises
 		db.Save(&session)

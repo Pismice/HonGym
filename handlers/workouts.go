@@ -30,6 +30,10 @@ func Workouts(r *gin.RouterGroup, db *gorm.DB) {
 		var workout misc.Workout
 		db.Preload("Seances").First(&workout, id)
 
+		if workout.OwnerID != int(user.ID) {
+			c.Abort()
+		}
+
 		var sessions []misc.Seance
 		db.Where("owner_id = ?", user.ID).Find(&sessions)
 
@@ -77,6 +81,14 @@ func Workouts(r *gin.RouterGroup, db *gorm.DB) {
 		var user misc.User
 		db.Where("session_id = ?", sessionID).First(&user)
 
+		id := c.Param("id")
+		var workout misc.Workout
+		db.First(&workout, id)
+
+		if workout.OwnerID != int(user.ID) {
+			c.Abort()
+		}
+
 		strArr := strings.Split(request.Selected_sessions, ",")
 		var sessionsId []int
 		for _, str := range strArr {
@@ -95,9 +107,6 @@ func Workouts(r *gin.RouterGroup, db *gorm.DB) {
 			sessions = append(sessions, session)
 		}
 
-		id := c.Param("id")
-		var workout misc.Workout
-		db.First(&workout, id)
 		workout.Name = request.Name
 		workout.Seances = sessions
 		db.Save(&workout)

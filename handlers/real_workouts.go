@@ -19,6 +19,10 @@ func RealWorkouts(r *gin.RouterGroup, db *gorm.DB) {
 		var realWorkout misc.RealWorkout
 		db.Preload("Template").First(&realWorkout, id)
 
+		if realWorkout.OwnerID != int(user.ID) {
+			c.Abort()
+		}
+
 		realWorkout.Finished = true
 		realWorkout.Active = false
 		db.Save(&realWorkout)
@@ -34,6 +38,10 @@ func RealWorkouts(r *gin.RouterGroup, db *gorm.DB) {
 		id := c.Param("id")
 		var template misc.Workout
 		db.Preload("Seances").First(&template, id)
+
+		if template.OwnerID != int(user.ID) {
+			c.Abort()
+		}
 
 		var realWorkout misc.RealWorkout
 		realWorkout.Active = true

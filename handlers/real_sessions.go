@@ -19,6 +19,10 @@ func RealSessions(r *gin.RouterGroup, db *gorm.DB) {
 		var realSeance misc.RealSeance
 		db.Preload("Template").First(&realSeance, id)
 
+		if realSeance.OwnerID != int(user.ID) {
+			c.Abort()
+		}
+
 		realSeance.Finished = true
 		realSeance.Active = false
 		db.Save(&realSeance)
@@ -30,6 +34,14 @@ func RealSessions(r *gin.RouterGroup, db *gorm.DB) {
 		id := c.Param("id")
 		var realSeance misc.RealSeance
 		db.Preload("Template").Preload("Template.Exercises").First(&realSeance, id)
+
+		sessionID, _ := c.Cookie("session_id")
+		var user misc.User
+		db.Where("session_id = ?", sessionID).First(&user)
+
+		if realSeance.OwnerID != int(user.ID) {
+			c.Abort()
+		}
 
 		var realExercises []misc.RealExercise
 		db.Preload("Template").Where("corresponding_seance_id = ?", realSeance.ID).Find(&realExercises)
@@ -45,6 +57,10 @@ func RealSessions(r *gin.RouterGroup, db *gorm.DB) {
 		id := c.Param("id")
 		var realSeance misc.RealSeance
 		db.Preload("Template").Preload("Template.Exercises").First(&realSeance, id)
+
+		if realSeance.OwnerID != int(user.ID) {
+			c.Abort()
+		}
 
 		if realSeance.Active != true {
 

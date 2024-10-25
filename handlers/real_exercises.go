@@ -15,6 +15,14 @@ func RealExercises(r *gin.RouterGroup, db *gorm.DB) {
 		var realExercise misc.RealExercise
 		db.Preload("Template").First(&realExercise, id)
 
+		sessionID, _ := c.Cookie("session_id")
+		var user misc.User
+		db.Where("session_id = ?", sessionID).First(&user)
+
+		if realExercise.OwnerID != int(user.ID) {
+			c.Abort()
+		}
+
 		reps := c.PostForm("reps")
 		weight := c.PostForm("weight")
 
@@ -36,6 +44,14 @@ func RealExercises(r *gin.RouterGroup, db *gorm.DB) {
 		var realExercise misc.RealExercise
 		db.Preload("Template").First(&realExercise, id)
 
+		sessionID, _ := c.Cookie("session_id")
+		var user misc.User
+		db.Where("session_id = ?", sessionID).First(&user)
+
+		if realExercise.OwnerID != int(user.ID) {
+			c.Abort()
+		}
+
 		var count int64
 		_ = db.Model(&misc.RealSet{}).Where("corresponding_exercise_id = ?", realExercise.ID).Count(&count).Error
 
@@ -46,6 +62,14 @@ func RealExercises(r *gin.RouterGroup, db *gorm.DB) {
 		id := c.Param("id")
 		var realExercise misc.RealExercise
 		db.Preload("Template").First(&realExercise, id)
+
+		sessionID, _ := c.Cookie("session_id")
+		var user misc.User
+		db.Where("session_id = ?", sessionID).First(&user)
+
+		if realExercise.OwnerID != int(user.ID) {
+			c.Abort()
+		}
 
 		realExercise.Finished = true
 		db.Save(&realExercise)

@@ -22,9 +22,18 @@ func Exercises(r *gin.RouterGroup, db *gorm.DB) {
 	})
 
 	r.GET("/exercises/:id", func(c *gin.Context) {
+		sessionID, _ := c.Cookie("session_id")
+		var user misc.User
+		db.Where("session_id = ?", sessionID).First(&user)
+
 		id := c.Param("id")
 		var exercise misc.Exercise
 		db.First(&exercise, id)
+
+		if exercise.OwnerID != int(user.ID) {
+			c.Abort()
+		}
+
 		c.HTML(http.StatusOK, "modify_exercise.html", gin.H{"exercise": exercise})
 	})
 
@@ -72,6 +81,14 @@ func Exercises(r *gin.RouterGroup, db *gorm.DB) {
 		if err := c.Bind(&request); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Missing name"})
 			return
+		}
+
+		sessionID, _ := c.Cookie("session_id")
+		var user misc.User
+		db.Where("session_id = ?", sessionID).First(&user)
+
+		if exercise.OwnerID != int(user.ID) {
+			c.Abort()
 		}
 
 		// Update the exercise

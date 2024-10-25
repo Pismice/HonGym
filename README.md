@@ -1,3 +1,9 @@
+# Problemes
+- [ ] Si deconnecte pendant navigation (ex: l utilisateur se connecte sur une autre machine) la page de login va remplace le #content au lieu de prendre toute la page
+
+# Appris
+- Difficile de me retrouver et savoir quelles fonctions est ou et affiche quoi. Un modèle plus MVC serait plus simple a gerer.
+
 # Pages
 ### Misc
 ## Login/Inscription

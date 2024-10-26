@@ -4,6 +4,11 @@
 # Appris
 - Difficile de me retrouver et savoir quelles fonctions est ou et affiche quoi. Un modèle plus MVC serait plus simple a gerer.
 
+# MISC
+```
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes
+```
+
 # Pages
 ### Misc
 ## Login/Inscription

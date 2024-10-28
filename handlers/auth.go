@@ -2,11 +2,11 @@ package handlers
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-	"time"
 
 	"gin-app/misc"
 )
@@ -53,7 +53,7 @@ func Auth(r *gin.RouterGroup, db *gorm.DB) {
 			Name:     "session_id",
 			Value:    sessionID,
 			Path:     "/",
-			Domain:   "10.253.1.27", // Set your domain here
+			Domain:   "localhost", // Set your domain here
 			Expires:  time.Now().Add(24 * time.Hour),
 			SameSite: http.SameSiteNoneMode, // Set SameSite=None
 			Secure:   true,                  // Requires HTTPS
@@ -102,6 +102,7 @@ func Auth(r *gin.RouterGroup, db *gorm.DB) {
 		user.Session_id = sessionID
 		db.Save(&user)
 
+		//c.SetCookie("session_id", sessionID, 3600, "/", "localhost", true, false)
 		cookie := &http.Cookie{
 			Name:     "session_id",
 			Value:    sessionID,

@@ -1,54 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-
-<body>
-
-	<nav class="navbar navbar-expand-lg">
-		<div class="container-fluid">
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03"
-				aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<a class="navbar-brand" href="https://github.com/Pismice/HonGym">HonGym</a>
-			<div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-					<li class="nav-item"><a class="nav-link-active" href="/protected/home" hx-get="/protected/home"
-							hx-target="#content">Home</a></li>
-					<li class="nav-item"><a class="nav-link" href="/protected/workouts " hx-get="/protected/workouts"
-							hx-target="#content">Manage your
-							workouts</a>
-					</li>
-					<li class="nav-item"><a class="nav-link" href="/protected/sessions" hx-get="/protected/sessions"
-							hx-target="#content">Manage your
-							sessions</a>
-					</li>
-					<li class="nav-item"><a class="nav-link" href="/protected/exercises" hx-get="/protected/exercises"
-							hx-target="#content">Manage your
-							exercises</a></li>
-					<li class="nav-item"><a class="nav-link" href="/protected/stats" hx-get="/protected/stats"
-							hx-target="#content">Check
-							your stats</a>
-					</li>
-					<li class="nav-item"><a class="nav-link" href="" hx-get="/loginregister" hx-target="#appo"
-							hx-swap="innerHTML">Go to login
-							screen</a>
-					</li>
-				</ul>
-			</div>
+<nav class="navbar navbar-expand-lg">
+	<div class="container-fluid">
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03"
+			aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<a class="navbar-brand" href="https://github.com/Pismice/HonGym">HonGym</a>
+		<div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+				<li class="nav-item"><a class="nav-link-active" href="/protected/home" hx-get="/protected/home"
+						hx-target="#content">Home</a></li>
+				<li class="nav-item"><a class="nav-link" href="/protected/workouts " hx-get="/protected/workouts"
+						hx-target="#content">Manage your
+						workouts</a>
+				</li>
+				<li class="nav-item"><a class="nav-link" href="/protected/sessions" hx-get="/protected/sessions"
+						hx-target="#content">Manage your
+						sessions</a>
+				</li>
+				<li class="nav-item"><a class="nav-link" href="/protected/exercises" hx-get="/protected/exercises"
+						hx-target="#content">Manage your
+						exercises</a></li>
+				<li class="nav-item"><a class="nav-link" href="/protected/stats" hx-get="/protected/stats"
+						hx-target="#content">Check
+						your stats</a>
+				</li>
+				<li class="nav-item"><a class="nav-link" href="" hx-get="/loginregister" hx-target="#appo"
+						hx-swap="innerHTML">Go to login
+						screen</a>
+				</li>
+			</ul>
 		</div>
-	</nav>
+	</div>
+</nav>
 
-	<main>
-		<div id="content" hx-get="/protected/home" hx-trigger="load" hx-target="#content" hx-swap="innerHTML">
-			HERE IS DISPLAYED THE APP
-			Right now its HOME (default)
-		</div>
-	</main>
-</body>
-
-</html>
+<main>
+	<div id="content" hx-get="/protected/home" hx-trigger="load" hx-target="#content" hx-swap="innerHTML">
+		HERE IS DISPLAYED THE APP
+		Right now its HOME (default)
+	</div>
+</main>

@@ -1,33 +1,46 @@
 <div id="app">
-	<h1>Login</h1>
-	<form hx-post="/login" hx-target="#app" hx-swap="outerHTML">
-		<label for="username">Username:</label>
-		<input type="text" id="username" name="username" required><br><br>
+	<div class="d-flex justify-content-center align-items-center min-vh-100">
+		<div class="container-custom">
+			<h1 class="text-center">Login</h1>
+			<form hx-post="/login" hx-target="#app" hx-swap="outerHTML">
+				<div class="mb-3">
+					<label for="username" class="form-label">Username:</label>
+					<input type="text" class="form-control" id="username" name="username" required>
+				</div>
 
-		<label for="password">Password:</label>
-		<input type="password" id="password" name="password" required><br><br>
+				<div class="mb-3">
+					<label for="password" class="form-label">Password:</label>
+					<input type="password" class="form-control" id="password" name="password" required>
+				</div>
 
-		<button type="submit">Login</button>
-	</form>
+				<button type="submit" class="btn btn-success w-100">Login</button>
+			</form>
 
-	<h1>Register</h1>
-	<form hx-post="/register" hx-target="#app" hx-swap="outerHTML">
-		<label for="username">Username:</label>
-		<input type="text" id="username" name="username" required><br><br>
+			<h1 class="text-center mt-5">Register</h1>
+			<form hx-post="/register" hx-target="#app" hx-swap="outerHTML">
+				<div class="mb-3">
+					<label for="username" class="form-label">Username:</label>
+					<input type="text" class="form-control" id="username" name="username" required>
+				</div>
 
-		<label for="password">Password:</label>
-		<input type="password" id="password" name="password" required><br><br>
+				<div class="mb-3">
+					<label for="password" class="form-label">Password:</label>
+					<input type="password" class="form-control" id="password" name="password" required>
+				</div>
 
-		<button type="submit">Register</button>
-	</form>
+				<button type="submit" class="btn btn-primary w-100">Register</button>
+			</form>
 
-	<img class="mt-2" src="assets/junior.jpg" height="200">
-	<figure class="">
-		<blockquote class="blockquote">
-			<p>Go go l asticot !!!</p>
-		</blockquote>
-		<figcaption class="blockquote-footer">
-			<cite title="Source Title">Hon ❤️</cite>
-		</figcaption>
-	</figure>
+			<img class="mt-4 img-fluid" src="assets/junior.jpg" height="200" alt="Image">
+
+			<figure class="mt-4">
+				<blockquote class="blockquote">
+					<p>Go go lasticot !!!</p>
+				</blockquote>
+				<figcaption class="blockquote-footer">
+					<cite title="Source Title">Hon ❤️</cite>
+				</figcaption>
+			</figure>
+		</div>
+	</div>
 </div>

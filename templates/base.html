@@ -34,7 +34,10 @@
 </nav>
 
 <main>
-	<div id="content" hx-get="/protected/home" hx-trigger="load" hx-target="#content" hx-swap="innerHTML" class="p-3">
-		ERROR: The app did not load correctly ! :(
+	<div id="old_content" hx-get="/protected/home" hx-trigger="load" hx-target="#content" hx-swap="innerHTML"
+		class="p-3 d-flex justify-content-center align-items-center min-vh-100">
+		<div id="content" class="container-custom">
+			ERROR: The app did not load correctly ! :(
+		</div>
 	</div>
 </main>

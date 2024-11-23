@@ -1,12 +1,17 @@
-<h2>Exercises</h2>
-<p>Welcome to the exercises page!</p>
+<h2>Exercises Templates</h2>
 
 <div id="exercises">
-	{{ range .exercises }}
-	<div>
-		- {{ .Name }} <button hx-get="/protected/exercises/{{ .ID }}" hx-target="#content">Modify</button>
-	</div>
-	{{ end }}
+	<ol class="list-group">
+		{{ range .exercises }}
+		<li class="list-group-item d-flex justify-content-between align-items-start">
+			<div class="ms-2 me-auto">
+				<div class="fw-bold">{{ .Name }}</div>
+			</div>
+			<button class="btn btn-primary" hx-get="/protected/exercises/{{ .ID }}" hx-target="#content">Modify</button>
+		</li>
+		{{ end }}
+	</ol>
 </div>
 
-<a href="/protected/creation_exercise" hx-get="/protected/creation_exercise" hx-target="#content">Create exercise</a>
+<button class="btn btn-success mt-2 p-3" hx-get="/protected/creation_exercise" hx-target="#content">Create a new
+	exercise template</button>

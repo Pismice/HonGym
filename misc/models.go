@@ -32,7 +32,7 @@ type Seance struct {
 
 type Exercise struct {
 	gorm.Model
-	Name    string `gorm:"uniqueIndex"`
+	Name    string
 	OwnerID int
 	Owner   User
 	Seances []Seance `gorm:"many2many:seance_exercises;"`

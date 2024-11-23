@@ -11,6 +11,8 @@ import (
 	"gin-app/misc"
 )
 
+var domain = "https://hongym.oa.r.appspot.com/"
+
 func Auth(r *gin.RouterGroup, db *gorm.DB) {
 	r.GET("/loginregister", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "login.html", gin.H{})
@@ -53,7 +55,7 @@ func Auth(r *gin.RouterGroup, db *gorm.DB) {
 			Name:     "session_id",
 			Value:    sessionID,
 			Path:     "/",
-			Domain:   "localhost", // Set your domain here
+			Domain:   domain,
 			Expires:  time.Now().Add(24 * time.Hour),
 			SameSite: http.SameSiteNoneMode, // Set SameSite=None
 			Secure:   true,                  // Requires HTTPS
@@ -107,7 +109,7 @@ func Auth(r *gin.RouterGroup, db *gorm.DB) {
 			Name:     "session_id",
 			Value:    sessionID,
 			Path:     "/",
-			Domain:   "10.253.1.27", // Set your domain here
+			Domain:   domain,
 			Expires:  time.Now().Add(24 * time.Hour),
 			SameSite: http.SameSiteNoneMode, // Set SameSite=None
 			Secure:   true,                  // Requires HTTPS

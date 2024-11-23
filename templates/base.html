@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg">
+<nav class="navbar navbar-expand-lg bg-primary">
 	<div class="container-fluid">
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03"
 			aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,8 +34,7 @@
 </nav>
 
 <main>
-	<div id="content" hx-get="/protected/home" hx-trigger="load" hx-target="#content" hx-swap="innerHTML">
-		HERE IS DISPLAYED THE APP
-		Right now its HOME (default)
+	<div id="content" hx-get="/protected/home" hx-trigger="load" hx-target="#content" hx-swap="innerHTML" class="p-3">
+		ERROR: The app did not load correctly ! :(
 	</div>
 </main>

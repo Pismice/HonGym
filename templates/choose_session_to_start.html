@@ -1,16 +1,21 @@
-<h2>Workout: {{ .workout.Template.Name }}</h2>
+<h1>Workout: {{ .workout.Template.Name }}</h1>
 <h3>Sessions of the week:</h3>
 <div id="result"></div>
 <div id="selected_sessions">
-	{{ range .sessions }}
-	<div>
-		<span class="sess_name">- {{ .Template.Name }}</span>
-		<button hx-post="/protected/sessions/{{ .ID }}/start" hx-target="#content" hx-swap="innerHTML" {{ if .Finished
-			}} class="btn btn-danger text-dark" {{ else }} class="btn btn-primary" {{ end }}>
-			START
-		</button>
-	</div>
-	{{ end }}
-	<button hx-get="protected/workouts/{{ .workout.ID }}/finish" hx-target="#content" hx-swap="innerHTML">Finish this
+	<ol class="list-group">
+		{{ range .sessions }}
+		<li class="list-group-item d-flex justify-content-between align-items-start">
+			<div class="ms-2 me-auto">
+				<div class="fw-bold"><strong>{{ .Template.Name }}</strong></div>
+			</div>
+			<button hx-post="/protected/sessions/{{ .ID }}/start" hx-target="#content" hx-swap="innerHTML" {{ if
+				.Finished }} class="btn btn-danger text-dark" {{ else }} class="btn btn-primary" {{ end }}>
+				START
+			</button>
+		</li>
+		{{ end }}
+	</ol>
+	<button class="btn btn-danger p-2 mt-2" hx-get="protected/workouts/{{ .workout.ID }}/finish" hx-target="#content"
+		hx-swap="innerHTML">Finish this
 		workout</button>
 </div>

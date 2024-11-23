@@ -1,6 +1,12 @@
-<h2>Workouts</h2>
+<h2>Active workout</h2>
+{{ if eq (len .workouts) 0 }}
+<p>You currently not have any workout template created</p>
+<button class="btn btn-success" hx-get="/protected/creation_workout" hx-target="#content" hx-swap="innerHTML">Create new
+	workout
+	template</button>
+{{ else }}
 <p>You currently have no active workout</p>
-<p>Choose a workout to activate</p>
+<p>Choose a workout to activate:</p>
 
 <div id="workouts">
 	{{ range .workouts }}
@@ -16,3 +22,4 @@
 	</div>
 	{{ end }}
 </div>
+{{ end }}

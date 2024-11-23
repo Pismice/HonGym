@@ -2,8 +2,11 @@ package main
 
 import (
 	"errors"
+	"fmt"
+	"github.com/joho/godotenv"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/sqlite"
@@ -12,18 +15,38 @@ import (
 	"gin-app/handlers"
 	"gin-app/middlewares"
 	"gin-app/misc"
+
+	_ "github.com/tursodatabase/libsql-client-go/libsql"
 )
 
+var prod = false
+
 func main() {
+	_ = godotenv.Load()
+	tursoToken := os.Getenv("TOKEN")
 	r := gin.Default()
 
 	r.LoadHTMLGlob("templates/*.html")
 
 	r.Static("/assets", "./assets")
 
-	db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
+	var db *gorm.DB
+	var err error
+
+	if prod {
+		url := "libsql://hongym-pismice.turso.io?authToken=" + tursoToken
+		db, err = gorm.Open(sqlite.New(sqlite.Config{
+			DriverName: "libsql",
+			DSN:        url,
+		}), &gorm.Config{})
+
+	} else {
+		db, err = gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
+	}
+
 	if err != nil {
-		panic("failed to connect database")
+		log.Printf("Error connecting to the database: %v", err)
+		return
 	}
 
 	db.AutoMigrate(&misc.Workout{})
@@ -82,9 +105,7 @@ func main() {
 		c.HTML(http.StatusOK, "index.html", gin.H{})
 	})
 
-	//r.Run(":8080")
-	err = r.RunTLS(":8443", "cert.pem", "key.pem")
-	if err != nil {
-		log.Fatalf("Failed to run server: %v", err)
-	}
+	fmt.Println("APP SHOULD HAVE STARTED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+	r.Run(":8080")
+	//err = r.RunTLS(":8080", "cert.pem", "key.pem")
 }

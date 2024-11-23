@@ -1,4 +1,3 @@
-<div>
-	<p>{{ .success }}</p>
+<div class="{{ if .success }}alert alert-success{{ else }}alert alert-danger{{ end }}">
 	<p>{{ .message }}</p>
 </div>

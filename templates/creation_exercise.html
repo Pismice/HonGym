@@ -1,10 +1,13 @@
 <h2>Create Exercise</h2>
 <div id="result"></div>
-<form hx-post="/protected/exercises" hx-target="#result" hx-swap="innerHTML">
-	<label for="exercise-name">Exercise Name:</label>
-	<input type="text" id="exercise-name" name="name" required>
-	<button type="submit">Add Exercise</button>
-</form>
-<form hx-get="/protected/exercises" hx-target="#content" hx-swap="innerHTML">
-	<button type="submit">Go back</button>
-</form>
+<div class="d-flex">
+	<form hx-post="/protected/exercises" hx-target="#result" hx-swap="innerHTML" class="d-flex">
+		<label for="exercise-name" class="p-2">Exercise Name:</label>
+		<input type="text" id="exercise-name" name="name" required>
+		<button type="submit" class="btn btn-success">Add Exercise</button>
+	</form>
+
+	<button hx-get="/protected/exercises" hx-target="#content" hx-swap="innerHTML" class="btn btn-danger">
+		Go back
+	</button>
+</div>

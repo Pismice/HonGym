@@ -6,7 +6,6 @@ import (
 	"github.com/joho/godotenv"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/sqlite"
@@ -19,11 +18,8 @@ import (
 	_ "github.com/tursodatabase/libsql-client-go/libsql"
 )
 
-var prod = false
-
 func main() {
 	_ = godotenv.Load()
-	tursoToken := os.Getenv("TOKEN")
 	r := gin.Default()
 
 	r.LoadHTMLGlob("templates/*.html")
@@ -33,16 +29,7 @@ func main() {
 	var db *gorm.DB
 	var err error
 
-	if prod {
-		url := "libsql://hongym-pismice.turso.io?authToken=" + tursoToken
-		db, err = gorm.Open(sqlite.New(sqlite.Config{
-			DriverName: "libsql",
-			DSN:        url,
-		}), &gorm.Config{})
-
-	} else {
-		db, err = gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
-	}
+	db, err = gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
 
 	if err != nil {
 		log.Printf("Error connecting to the database: %v", err)
@@ -64,6 +51,10 @@ func main() {
 
 	protected.GET("/home", func(c *gin.Context) {
 		// Iterate over all the Workouts and return the first one that is active for the connected user
+		type WorkoutWithCount struct {
+			misc.Workout
+			Count int64
+		}
 		var user misc.User
 		sessionID, _ := c.Cookie("session_id")
 		db.Where("session_id = ?", sessionID).First(&user)
@@ -76,7 +67,16 @@ func main() {
 				db.Where("session_id = ?", sessionID).First(&user)
 				var workouts []misc.Workout
 				db.Model(&misc.Workout{}).Preload("Seances").Where("owner_id = ?", user.ID).Find(&workouts)
-				c.HTML(http.StatusOK, "choose_workout_to_activate.html", gin.H{"workouts": workouts})
+				var workoutsWithCount []WorkoutWithCount
+				for _, workout := range workouts {
+					var count int64
+					db.Table("real_workouts").Where("template_id = ?", workout.ID).Count(&count)
+					workoutsWithCount = append(workoutsWithCount, WorkoutWithCount{
+						Workout: workout,
+						Count:   count,
+					})
+				}
+				c.HTML(http.StatusOK, "choose_workout_to_activate.html", gin.H{"workouts": workoutsWithCount})
 			} else {
 				c.JSON(200, gin.H{"message": "Unexpected error"})
 			}

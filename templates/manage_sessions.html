@@ -2,18 +2,28 @@
 
 <p>Welcome to the sessions page!</p>
 
-<div id="exercises">
-	{{ range .sessions }}
-	<div>
-		- {{ .Name }}
-		<button hx-get="/protected/sessions/{{ .ID }}" hx-target="#content">Modify</button>
-		{{ range .Exercises }}
-		<div>
-			-> - {{ .Name }}
-		</div>
+<div id="sessions">
+	<ol class="list-group">
+		{{ range .sessions }}
+		<li class="list-group-item">
+			<div class="d-flex justify-content-between align-items-start">
+				<div class="ms-2 me-auto">
+					<div class="fw-bold">{{ .Name }}</div>
+					<ol class="list-group mt-2">
+						{{ range .Exercises }}
+						<li class="list-group-item">
+							<span class="ms-2">-> {{ .Name }}</span>
+						</li>
+						{{ end }}
+					</ol>
+				</div>
+				<button class="btn btn-primary" hx-get="/protected/sessions/{{ .ID }}"
+					hx-target="#content">Modify</button>
+			</div>
+		</li>
 		{{ end }}
-	</div>
-	{{ end }}
+	</ol>
 </div>
 
-<a href="" hx-get="/protected/creation_session" hx-target="#content">Create a new session</a>
+<button class="btn btn-success mt-2 p-3" hx-get="/protected/creation_session" hx-target="#content">Create a new
+	session</button>

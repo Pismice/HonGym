@@ -1,0 +1,6 @@
+# flyctl launch added from .gitignore
+**/cert.pem
+**/key.pem
+**/gorm.db
+**/.env
+fly.toml

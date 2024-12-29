@@ -1,18 +1,30 @@
-<h2>Workouts</h2>
-<p>Welcome to the workouts page!</p>
+<h2 class="text-center">Workouts</h2>
+<p class="text-center">Welcome to the workouts page!</p>
 
 <div id="workouts">
-	{{ range .workouts }}
-	<div>
-		- {{ .Name }}
-		<button hx-get="/protected/workouts/{{ .ID }}" hx-target="#content">Modify</button>
-		{{ range .Seances }}
-		<div>
-			-> - {{ .Name }}
-		</div>
+	<ol class="list-group">
+		{{ range .workouts }}
+		<li class="list-group-item">
+			<div class="d-flex justify-content-between align-items-start">
+				<div class="ms-2 me-auto">
+					<div class="fw-bold">- {{ .Name }}</div>
+					<!-- Nested seances for each workout -->
+					<ol class="list-group mt-2">
+						{{ range .Seances }}
+						<li class="list-group-item">
+							<span class="ms-2">-> {{ .Name }}</span>
+						</li>
+						{{ end }}
+					</ol>
+				</div>
+				<button class="btn btn-primary" hx-get="/protected/workouts/{{ .ID }}"
+					hx-target="#content">Modify</button>
+			</div>
+		</li>
 		{{ end }}
-	</div>
-	{{ end }}
+	</ol>
 </div>
 
-<a href="" hx-get="/protected/creation_workout" hx-target="#content">Create a new workout</a>
+<button class="btn btn-success mt-4 p-3 w-100" hx-get="/protected/creation_workout" hx-target="#content">
+	Create a new workout
+</button>

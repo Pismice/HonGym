@@ -1,37 +1,44 @@
-<h1>Create Workout</h1>
+<h1 class="text-center">Create Workout</h1>
 <div id="result"></div>
 
-<h3>Add sessions to your workout:</h3>
-<div id="available_sessions">
-	{{ range .sessions }}
-	<div>
-		<span class="sess_id" style="display: none;">{{ .ID }}</span>
-		<span class="sess_name">- {{ .Name }}</span>
-		<button class="add-btn"> Add </button>
+<h3 class="mt-4">Add sessions to your workout:</h3>
+<div class="mb-4">
+	<ol class="list-group" id="available_sessions">
+		{{ range .sessions }}
+		<li class="list-group-item d-flex justify-content-between align-items-center">
+			<span class="sess_id d-none">{{ .ID }}</span>
+			<span class="sess_name">- {{ .Name }}</span>
+			<button class="btn btn-success add-btn">Add</button>
+		</li>
+		{{ end }}
+	</ol>
+</div>
+
+<h5 class="mt-4">Selected sessions:</h5>
+<div class="mb-4">
+	<ol class="list-group" id="selected_sessions">
+		<!-- Selected sessions will be dynamically added here -->
+	</ol>
+</div>
+
+<form hx-post="/protected/workouts" hx-target="#result" hx-swap="innerHTML" class="mb-4">
+	<div class="mb-3">
+		<label for="workout-name" class="form-label">Workout Name:</label>
+		<input type="text" id="workout-name" name="name" class="form-control" required>
 	</div>
-	{{ end }}
-</div>
-
-<h5>Selected sessions:</h5>
-<div id="selected_sessions">
-</div>
-
-<form hx-post="/protected/workouts" hx-target="#result" hx-swap="innerHTML">
-	<label for="workout-name">Workout Name:</label>
-	<input type="text" id="workout-name" name="name" required>
 	<input type="hidden" id="selected-sessions-input" name="selected_sessions" value="">
-	<button type="submit">Add Workout</button>
+	<button type="submit" class="btn btn-primary w-100">Add Workout</button>
 </form>
 
-<form hx-get="/protected/workouts" hx-target="#content" hx-swap="innerHTML">
-	<button type="submit">Go back</button>
-</form>
+<button hx-get="/protected/workouts" hx-target="#content" hx-swap="innerHTML" class="btn btn-secondary w-100">Go
+	back</button>
+
 
 <script>
 	// Select the parent containers
-	const availableSessions = document.getElementById('available_sessions');
-	const selectedSessions = document.getElementById('selected_sessions');
-	const selectedSessionsInput = document.getElementById('selected-sessions-input'); // hidden input to store selected exercises
+	var availableSessions = document.getElementById('available_sessions');
+	var selectedSessions = document.getElementById('selected_sessions');
+	var selectedSessionsInput = document.getElementById('selected-sessions-input'); // hidden input to store selected exercises
 
 	// Function to update the hidden input value based on the selected exercises
 	function updateSelectedSessionsInput() {
@@ -54,7 +61,7 @@
 			// Create a new "Remove" button
 			const removeButton = document.createElement('button');
 			removeButton.textContent = 'Remove';
-			removeButton.classList.add('remove-btn');
+			removeButton.classList.add('remove-btn', 'btn', 'btn-danger');
 
 			// Append the "Remove" button to the cloned exercise
 			clonedExercise.appendChild(removeButton);
@@ -85,7 +92,7 @@
 			// Create a new "Add" button to add back to available exercises
 			const addButton = document.createElement('button');
 			addButton.textContent = 'Add';
-			addButton.classList.add('add-btn');
+			addButton.classList.add('add-btn', 'btn', 'btn-success');
 
 			// Append the "Add" button to the cloned exercise
 			clonedExercise.appendChild(addButton);

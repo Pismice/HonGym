@@ -1,25 +1,36 @@
-<h2>Active workout</h2>
-{{ if eq (len .workouts) 0 }}
-<p>You currently not have any workout template created</p>
-<button class="btn btn-success" hx-get="/protected/creation_workout" hx-target="#content" hx-swap="innerHTML">Create new
-	workout
-	template</button>
-{{ else }}
-<p>You currently have no active workout</p>
-<p>Choose a workout to activate:</p>
+<h2 class="text-center">Active Workout</h2>
 
-<div id="workouts">
-	{{ range .workouts }}
-	<div>
-		- {{ .Name }}
-		<button hx-post="/protected/workouts/{{ .ID }}/activate" hx-target="#content"
-			hx-swap="innerHTML">Activate</button>
-		{{ range .Seances }}
-		<div>
-			-> - {{ .Name }}
-		</div>
+{{ if eq (len .workouts) 0 }}
+<p>You currently do not have any workout template created.</p>
+<button class="btn btn-success mt-4" hx-get="/protected/creation_workout" hx-target="#content" hx-swap="innerHTML">
+	Create new workout template
+</button>
+{{ else }}
+<p>You currently have no active workout.</p>
+<p class="mt-3">Choose a workout to activate:</p>
+
+<div id="workouts" class="mb-4">
+	<ol class="list-group">
+		{{ range .workouts }}
+		<li class="list-group-item">
+			<div class="d-flex justify-content-between align-items-start">
+				<div>
+					<div class="fw-bold">- {{ .Name }}</div>
+					<div class="ms-3">
+						{{ range .Seances }}
+						<div>
+							-> - {{ .Name }}
+						</div>
+						{{ end }}
+					</div>
+				</div>
+				<button class="btn btn-primary" hx-post="/protected/workouts/{{ .ID }}/activate" hx-target="#content"
+					hx-swap="innerHTML">
+					Activate
+				</button>
+			</div>
+		</li>
 		{{ end }}
-	</div>
-	{{ end }}
+	</ol>
 </div>
 {{ end }}

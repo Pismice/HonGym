@@ -160,7 +160,7 @@ func Sessions(r *gin.RouterGroup, db *gorm.DB) {
 		if idk.Error != nil {
 			c.HTML(http.StatusOK, "result.html", gin.H{"success": false, "message": idk.Error})
 		} else {
-			c.HTML(http.StatusOK, "result.html", gin.H{"success": true, "message": "Session modified"})
+			c.HTML(http.StatusOK, "result.html", gin.H{"success": true, "message": "Session created"})
 		}
 	})
 

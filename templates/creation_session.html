@@ -2,36 +2,39 @@
 <div id="result"></div>
 
 <h3>Add exercises to your session:</h3>
-<div id="available_exercises">
-	{{ range .exercises }}
-	<div>
-		<span class="exo_id" style="display: none;">{{ .ID }}</span>
-		<span class="exo_name">- {{ .Name }}</span>
-		<button class="add-btn"> Add </button>
-	</div>
-	{{ end }}
+<div>
+	<ol class="list-group" id="available_exercises">
+		{{ range .exercises }}
+		<li class="list-group-item d-flex justify-content-between align-items-center">
+			<span class="exo_name">- {{ .Name }}</span>
+			<button class="btn btn-success add-btn">Add</button>
+			<span class="exo_id d-none">{{ .ID }}</span>
+		</li>
+		{{ end }}
+	</ol>
 </div>
 
 <h3>Selected exercises:</h3>
-<div id="selected_exercises">
+<div>
+	<ol class="list-group" id="selected_exercises">
 </div>
 
 <form hx-post="/protected/sessions" hx-target="#result" hx-swap="innerHTML">
 	<label for="exercise-name">Session Name:</label>
 	<input type="text" id="exercise-name" name="name" required>
 	<input type="hidden" id="selected-exercises-input" name="selected_exercises" value="">
-	<button type="submit">Add Session</button>
+	<button type="submit" class="btn btn-success">Add Session</button>
 </form>
 
-<form hx-get="/protected/sessions" hx-target="#content" hx-swap="innerHTML">
-	<button type="submit">Go back</button>
-</form>
+<button hx-get="/protected/sessions" hx-target="#content" hx-swap="innerHTML" type="submit" class="btn btn-danger">Go
+	back</button>
+
 
 <script>
 	// Select the parent containers
-	const availableExercises = document.getElementById('available_exercises');
-	const selectedExercises = document.getElementById('selected_exercises');
-	const selectedExercisesInput = document.getElementById('selected-exercises-input'); // hidden input to store selected exercises
+	var availableExercises = document.getElementById('available_exercises');
+	var selectedExercises = document.getElementById('selected_exercises');
+	var selectedExercisesInput = document.getElementById('selected-exercises-input'); // hidden input to store selected exercises
 
 	// Function to update the hidden input value based on the selected exercises
 	function updateSelectedExercisesInput() {
@@ -54,7 +57,7 @@
 			// Create a new "Remove" button
 			const removeButton = document.createElement('button');
 			removeButton.textContent = 'Remove';
-			removeButton.classList.add('remove-btn');
+			removeButton.classList.add('remove-btn', 'btn', 'btn-danger');
 
 			// Append the "Remove" button to the cloned exercise
 			clonedExercise.appendChild(removeButton);
@@ -85,7 +88,7 @@
 			// Create a new "Add" button to add back to available exercises
 			const addButton = document.createElement('button');
 			addButton.textContent = 'Add';
-			addButton.classList.add('add-btn');
+			addButton.classList.add('add-btn', 'btn', 'btn-success');
 
 			// Append the "Add" button to the cloned exercise
 			clonedExercise.appendChild(addButton);

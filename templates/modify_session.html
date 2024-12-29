@@ -1,36 +1,44 @@
-<h2>Modify Session: {{ .session.Name }}</h2>
+<h2 class="mb-4">Modify Session: {{ .session.Name }}</h2>
 <div id="result"></div>
 
-<h3>Add exercises to your session:</h3>
-<div id="available_exercises">
-	{{ range .exercises_not_selected }}
-	<div>
-		<span class="exo_id" style="display: none;">{{ .ID }}</span>
-		<span class="exo_name">- {{ .Name }}</span>
-		<button class="add-btn"> Add </button>
-	</div>
-	{{ end }}
+<h3 class="mb-3">Add Exercises to Your Session:</h3>
+<div>
+	<ol class="list-group" id="available_exercises">
+		{{ range .exercises_not_selected }}
+		<li class="list-group-item d-flex justify-content-between align-items-center">
+			<span class="exo_name">- {{ .Name }}</span>
+			<button class="btn btn-primary add-btn">Add</button>
+			<span class="exo_id d-none">{{ .ID }}</span>
+		</li>
+		{{ end }}
+	</ol>
 </div>
 
-<h3>Selected exercises:</h3>
-<div id="selected_exercises">
-	{{ range .exercises_selected }}
-	<div>
-		<span class="exo_id" style="display: none;">{{ .ID }}</span>
-		<span class="exo_name">- {{ .Name }}</span>
-		<button class="remove-btn"> Remove </button>
-	</div>
-	{{ end }}
+<h3 class="mt-4 mb-3">Selected Exercises:</h3>
+<div>
+	<ol class="list-group" id="selected_exercises">
+		{{ range .exercises_selected }}
+		<li class="list-group-item d-flex justify-content-between align-items-center">
+			<span class="exo_name">- {{ .Name }}</span>
+			<button class="btn btn-danger remove-btn">Remove</button>
+			<span class="exo_id d-none">{{ .ID }}</span>
+		</li>
+		{{ end }}
+	</ol>
 </div>
 
-<form hx-patch="/protected/sessions/{{ .session.ID }}" hx-target="#result" hx-swap="innerHTML">
-	<label for="session-name">Session Name:</label>
-	<input type="text" id="session-name" name="name" value="{{ .session.Name }}" required>
+<form hx-patch="/protected/sessions/{{ .session.ID }}" hx-target="#result" hx-swap="innerHTML" class="mt-4">
+	<div class="mb-3">
+		<label for="session-name" class="form-label">Session Name:</label>
+		<input type="text" class="form-control" id="session-name" name="name" value="{{ .session.Name }}" required>
+	</div>
 	<input type="hidden" id="selected-exercises-input" name="selected-exercises-input" value="">
-	<button type="submit">Apply modifications</button>
+	<button type="submit" class="btn btn-success w-100">Apply Modifications</button>
 </form>
 
-<button hx-get="/protected/sessions" hx-target="#content" hx-swap="innerHTML">Go back</button>
+<button hx-get="/protected/sessions" hx-target="#content" hx-swap="innerHTML" class="btn btn-secondary mt-3 w-100">Go
+	Back</button>
+
 
 <script>
 	{ // NEEDED to avoid redifintion of the availableExercises, selectedExercises, selectedExercisesInput variables
@@ -60,7 +68,7 @@
 				// Create a new "Remove" button
 				const removeButton = document.createElement('button');
 				removeButton.textContent = 'Remove';
-				removeButton.classList.add('remove-btn');
+				removeButton.classList.add('remove-btn', 'btn', 'btn-danger');
 
 				// Append the "Remove" button to the cloned exercise
 				clonedExercise.appendChild(removeButton);
@@ -91,7 +99,7 @@
 				// Create a new "Add" button to add back to available exercises
 				const addButton = document.createElement('button');
 				addButton.textContent = 'Add';
-				addButton.classList.add('add-btn');
+				addButton.classList.add('add-btn', 'btn', 'btn-success');
 
 				// Append the "Add" button to the cloned exercise
 				clonedExercise.appendChild(addButton);
